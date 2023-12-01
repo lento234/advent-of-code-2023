@@ -1,9 +1,9 @@
 package main
 
 import (
+	"aoc2023/cmd"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -49,13 +49,21 @@ func getInput(day int) error {
 	return nil
 }
 
-func main() {
-	fmt.Println("Advent of code 2023")
+// func main() {
+// 	fmt.Println("Advent of code 2023")
 
-	// Get input of the day
-	err := getInput(1)
-	if err != nil {
-		fmt.Println("Failed to fetch input")
-		log.Fatal(err)
-	}
+// 	// Get input of the day
+// 	err := getInput(1)
+// 	if err != nil {
+// 		fmt.Println("Failed to fetch input")
+// 		log.Fatal(err)
+// 	}
+// }
+
+// func main() {
+// 	fmt.Println("Advent of code 2023")
+// }
+
+func main() {
+	cmd.Execute()
 }
