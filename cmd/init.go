@@ -78,7 +78,10 @@ func copyTemplate(srcFilename, dstFilename string, params map[string]string) err
 	defer f.Close()
 
 	// Write to file
-	tmpl.Execute(f, params)
+	err = tmpl.Execute(f, params)
+	if err != nil {
+		return err
+	}
 
 	return nil
 
@@ -129,7 +132,7 @@ func fetchDescription(dirName string, day int) error {
 	url := fmt.Sprintf("%s/%d", URL, day)
 	log.Infof("Getting description from: '%s'", url)
 
-	body, err := getHtmlBody(url)
+	body, err := getHTMLBody(url)
 	if err != nil {
 		return err
 	}
@@ -157,7 +160,7 @@ func fetchDescription(dirName string, day int) error {
 	findArticle(doc)
 
 	if node == nil {
-		return fmt.Errorf("Article tag not found")
+		return fmt.Errorf("'article' tag not found")
 	}
 
 	converter := md.NewConverter("", true, nil)
@@ -165,7 +168,7 @@ func fetchDescription(dirName string, day int) error {
 	desc := make([]string, 0)
 	for _, n := range node {
 		var src strings.Builder
-		html.Render(&src, n)
+		err := html.Render(&src, n)
 		if err != nil {
 			return err
 		}
@@ -188,7 +191,7 @@ func fetchDescription(dirName string, day int) error {
 
 }
 
-func getHtmlBody(url string) ([]byte, error) {
+func getHTMLBody(url string) ([]byte, error) {
 	// Parse cookie
 	cookieBuf, err := os.ReadFile(".cookie")
 	if err != nil {
@@ -204,7 +207,7 @@ func getHtmlBody(url string) ([]byte, error) {
 	// Set cookie
 	req.AddCookie(&http.Cookie{
 		Name:  "session",
-		Value: string(cookie),
+		Value: cookie,
 	})
 
 	resp, err := http.DefaultClient.Do(req)
@@ -215,7 +218,7 @@ func getHtmlBody(url string) ([]byte, error) {
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("Error %s: %s", resp.Status, body)
+		return nil, fmt.Errorf("error %s: %s", resp.Status, body)
 	}
 	// Read response
 	body, err := io.ReadAll(resp.Body)
@@ -238,7 +241,7 @@ func fetchInput(dirName string, day int) error {
 
 	url := fmt.Sprintf("%s/%d/input", URL, day)
 
-	body, err := getHtmlBody(url)
+	body, err := getHTMLBody(url)
 	if err != nil {
 		return err
 	}

@@ -36,6 +36,11 @@ university coursework, practice problems, or to challenge each other.
     ```bash
     go build
     ```
+3. Lint:
+
+    ```bash
+    golangci-lint run
+    ```
 
 ## Usage
 

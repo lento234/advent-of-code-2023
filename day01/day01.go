@@ -11,7 +11,7 @@ import (
 
 func part1(input []string) int {
 
-	r, err := regexp.Compile("\\d")
+	r, err := regexp.Compile(`\d`)
 	utils.CheckErr(err)
 
 	result := 0
