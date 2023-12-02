@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"aoc2023/day01"
+	"aoc2023/day02"
 	"fmt"
 	"os"
 	"reflect"
@@ -15,9 +16,7 @@ var day int
 
 var challenges = []interface{}{
 	day01.Solve,
-	func() error {
-		return fmt.Errorf("Not yet solved!")
-	},
+	day02.Solve,
 }
 
 // rootCmd represents the base command when called without any subcommands
