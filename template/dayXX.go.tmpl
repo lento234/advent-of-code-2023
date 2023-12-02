@@ -1,0 +1,31 @@
+package day{{.day}}
+
+import (
+	"aoc2023/utils"
+	"fmt"
+)
+
+func part1(input []string) int {
+	result := 0
+	return result
+}
+
+// func part2(input []string) int {
+// 	result := 0
+// 	return result
+// }
+
+func Solve() error {
+	// Parse input
+	input := utils.ParseFile("day{{.day}}/input.txt")
+
+	// Part 1
+	result := part1(input)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 1"), result)
+
+	// // Part 2
+	// result = part2(input)
+	// fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
+
+	return nil
+}

@@ -7,8 +7,10 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
+	"github.com/charmbracelet/log"
 	"golang.org/x/net/html"
 )
 
@@ -18,24 +20,102 @@ const (
 
 func initDay(day int) error {
 
-	fmt.Printf("Initializing day %d...\n", day)
+	log.Infof("Initializing day %d...", day)
 
 	// Initializing directory
 	dirName := fmt.Sprintf("day%02d", day)
 	_, err := os.Stat(dirName)
 	if os.IsNotExist(err) {
-		fmt.Printf("Creating folder: %s/\n", dirName)
+		log.Infof("Creating folder: '%s/'", dirName)
 		if err := os.Mkdir(dirName, os.ModePerm); err != nil {
 			return err
 		}
 	}
 
+	// Copy templates
+	err = setupTemplates(dirName, day)
+	if err != nil {
+		return err
+	}
+
 	// Fetch description
 	err = fetchDescription(dirName, day)
+	if err != nil {
+		return err
+	}
 
 	// Fetch input
 	err = fetchInput(dirName, day)
+	if err != nil {
+		return err
+	}
 
+	return nil
+
+}
+
+func copyTemplate(srcFilename, dstFilename string, params map[string]string) error {
+
+	log.Infof("Creating template: %s -> %s", srcFilename, dstFilename)
+
+	// Read file
+	buf, err := os.ReadFile(srcFilename)
+	if err != nil {
+		return err
+	}
+
+	// Template
+	tmpl := template.New(dstFilename)
+	tmpl, err = tmpl.Parse(string(buf))
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(dstFilename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Write to file
+	tmpl.Execute(f, params)
+
+	return nil
+
+}
+
+func setupTemplates(dirname string, day int) error {
+	tmplDir := "template"
+
+	params := map[string]string{
+		"day": fmt.Sprintf("%02d", day),
+	}
+	// Copy solution
+	err := copyTemplate(
+		filepath.Join(tmplDir, "dayXX.go.tmpl"),
+		filepath.Join(dirname, fmt.Sprintf("day%02d.go", day)),
+		params,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Copy test
+	err = copyTemplate(
+		filepath.Join(tmplDir, "dayXX_test.go.tmpl"),
+		filepath.Join(dirname, fmt.Sprintf("day%02d_test.go", day)),
+		params,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Copy benchmark
+	err = copyTemplate(
+		filepath.Join(tmplDir, "benchmark_test.go.tmpl"),
+		filepath.Join(dirname, "benchmark_test.go"),
+		params,
+	)
 	if err != nil {
 		return err
 	}
@@ -47,7 +127,7 @@ func initDay(day int) error {
 func fetchDescription(dirName string, day int) error {
 
 	url := fmt.Sprintf("%s/%d", URL, day)
-	fmt.Println("Getting description from:", url)
+	log.Infof("Getting description from: '%s'", url)
 
 	body, err := getHtmlBody(url)
 	if err != nil {
@@ -98,7 +178,7 @@ func fetchDescription(dirName string, day int) error {
 
 	// Write to file
 	fileName := filepath.Join(dirName, "README.md")
-	fmt.Printf("Writing description: %s\n", fileName)
+	log.Infof("Writing description: '%s'", fileName)
 	err = os.WriteFile(fileName, []byte(strings.Join(desc, "\n\n")), 0644)
 	if err != nil {
 		return err
@@ -164,7 +244,7 @@ func fetchInput(dirName string, day int) error {
 	}
 
 	// Write to file
-	fmt.Printf("Writing input: %s\n", fileName)
+	log.Infof("Writing input: %s", fileName)
 	err = os.WriteFile(fileName, body, 0644)
 	if err != nil {
 		return err
