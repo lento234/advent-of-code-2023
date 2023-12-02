@@ -3,6 +3,7 @@ package cmd
 import (
 	"aoc2023/day01"
 	"aoc2023/day02"
+	"aoc2023/utils"
 	"fmt"
 	"os"
 	"reflect"
@@ -49,7 +50,6 @@ var initCmd = &cobra.Command{
 		if day <= 0 || day > 24 {
 			return fmt.Errorf("Day %d is not an advent day.", day)
 		}
-		// fmt.Printf("Initializing day %d\n", day)
 		err := initDay(day)
 		if err != nil {
 			log.Fatal(err)
@@ -67,7 +67,13 @@ var runCmd = &cobra.Command{
 			return fmt.Errorf("Day %d is not an advent day.", day)
 		}
 		// Calling challenge of the day
+		if day > len(challenges) {
+			log.Fatalf("Day %d not solved!", day)
+		}
 		f := reflect.ValueOf(challenges[day-1])
+
+		// Solve challenge
+		fmt.Println(utils.FormatMagenta(fmt.Sprintf("Challenge day %d:", day)))
 		res := f.Call([]reflect.Value{})
 		err := res[0].Interface()
 		if err != nil {

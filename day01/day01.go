@@ -1,14 +1,13 @@
 package day01
 
 import (
+	"aoc2023/utils"
 	"fmt"
 	"regexp"
 	"slices"
 	"strconv"
 	"strings"
-	"aoc2023/utils"
 )
-
 
 func part1(input []string) int {
 
@@ -71,18 +70,17 @@ func part2(input []string) int {
 	return result
 }
 
-
 func Solve() error {
 	// Parse input
 	input := utils.ParseFile("day01/input.txt")
 
 	// Part 1
 	result := part1(input)
-	fmt.Println("Part 1:", result)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 1"), result)
 
 	// Test part 1
 	result = part2(input)
-	fmt.Println("Part 2:", result)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
 
 	return nil
 }
