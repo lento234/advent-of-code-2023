@@ -19,34 +19,48 @@ university coursework, practice problems, or to challenge each other.
 
 ## Calendar
 
-| M           | T   | W   | T   | F   | **S** | **S** |
-|-------------|-----|-----|-----|-----|-------|-------|
-|             |     |     |     | 1   | 2     | 3     |
-| 4           | 5   | 6   | 7   | 8   | 9     | 10    |
-| 11          | 12  | 13  | 14  | 15  | 16    | 17    |
-| 18          | 19  | 20  | 21  | 22  | 23    | 24    |
-| \[🎁\]\[1\] |     |     |     |     |       |       |
+| M      | T   | W   | T   | F   | *S* | *S* |
+| ------ | --- | --- | --- | --- | --- | --- |
+|        |     |     |     | 1   | 2   | 3   |
+| 4      | 5   | 6   | 7   | 8   | 9   | 10  |
+| 11     | 12  | 13  | 14  | 15  | 16  | 17  |
+| 18     | 19  | 20  | 21  | 22  | 23  | 24  |
+| [🎁][1] |     |     |     |     |     |     |
 
 ## Setup
 
-1. Dependencies for querying puzzle:
+1. Install go: [go.dev](https://go.dev/dl/).
+
+2. Build project:
 
     ```bash
-    $ brew install curl pandoc
+    go build
     ```
 
-2. Go setup: [go.dev](https://go.dev/dl/) 
+## Usage
 
-3. Run challenge of the day:
+**Initializing day:**
 
-    ```bash
-    go run main.go run --day <day>
-    ```
+```bash
+./aoc2023 init --day <day>
+```
 
-4. Easter-egg:
+**Run challenge of the day:**
 
-    ```bash
-    go run main.go xmas
-    ```
+```bash
+./aoc2023 run --day <day>
+```
+
+**Run tests**
+
+```bash
+go test ./day*
+```
+
+**Easter eggs**
+
+```bash
+./aoc2023 xmas
+```
 
 [1]: https://youtu.be/mkF7xLtNzPc?si=jQ7NB9oxtYNauYwd&t=27
