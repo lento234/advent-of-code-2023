@@ -1,30 +1,30 @@
 package cmd
 
 import (
+	"aoc2023/day01"
 	"fmt"
-	"log"
 	"os"
+	"reflect"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
 
 var day int
+
+var challenges = []interface{}{
+	day01.Solve,
+	func() error {
+		return fmt.Errorf("Not yet solved!")
+	},
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "aoc2023",
 	Short: "Advent of Code 2023",
 	Long:  "Solutions to Advent of Code",
-}
-
-func init() {
-	rootCmd.CompletionOptions.DisableDefaultCmd = true
-	rootCmd.AddCommand(xmasCmd)
-
-	rootCmd.AddCommand(initCmd)
-	initCmd.Flags().IntVar(&day, "day", 0, "Day to initialize")
-	initCmd.MarkFlagRequired("day")
 }
 
 var xmasCmd = &cobra.Command{
@@ -58,6 +58,41 @@ var initCmd = &cobra.Command{
 
 		return nil
 	},
+}
+
+var runCmd = &cobra.Command{
+	Use:   "run",
+	Short: "Run the challenge of the day",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if day <= 0 || day > 24 {
+			return fmt.Errorf("Day %d is not an advent day.", day)
+		}
+		// Calling challenge of the day
+		f := reflect.ValueOf(challenges[day-1])
+		res := f.Call([]reflect.Value{})
+		err := res[0].Interface()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		return nil
+	},
+}
+
+func init() {
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
+	// Easter egg
+	rootCmd.AddCommand(xmasCmd)
+
+	// Initizalize the day
+	rootCmd.AddCommand(initCmd)
+	initCmd.Flags().IntVar(&day, "day", 0, "Day to initialize")
+	initCmd.MarkFlagRequired("day")
+
+	// Run the challenge of the day
+	rootCmd.AddCommand(runCmd)
+	runCmd.Flags().IntVar(&day, "day", 0, "Day to initialize")
+	runCmd.MarkFlagRequired("day")
 }
 
 func Execute() {
