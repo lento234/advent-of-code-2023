@@ -23,8 +23,7 @@ var challenges = []interface{}{
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "aoc2023",
-	Short: "Advent of Code 2023",
-	Long:  "Solutions to Advent of Code",
+	Short: "🎅🎄 Advent of Code 2023 ☃️❄️",
 }
 
 var xmasCmd = &cobra.Command{
