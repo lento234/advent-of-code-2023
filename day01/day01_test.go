@@ -2,9 +2,8 @@ package day01
 
 import (
 	"aoc2023/utils"
+	"fmt"
 	"testing"
-
-	"github.com/charmbracelet/log"
 )
 
 func TestPart1(t *testing.T) {
@@ -21,9 +20,9 @@ treb7uchet
 	result := part1(utils.ParseString(puzzle))
 
 	if result != answer {
-		t.Fatalf("Failed!: %v != %v", answer, result)
+		t.Fatalf("Part 1 [Failed]: %v != %v", answer, result)
 	}
-	log.Infof("Solved!: %v == %v", answer, result)
+	fmt.Println(fmt.Sprintf("Part 1 [%s]: %v == %v", utils.FormatGreen("solved"), answer, result))
 }
 
 func TestPart2(t *testing.T) {
@@ -45,5 +44,5 @@ zoneight234
 	if result != answer {
 		t.Fatalf("Failed!: %v != %v", answer, result)
 	}
-	log.Infof("Solved!: %v == %v", answer, result)
+	fmt.Println(fmt.Sprintf("Part 2 [%s]: %v == %v", utils.FormatGreen("solved"), answer, result))
 }

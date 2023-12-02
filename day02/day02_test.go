@@ -2,9 +2,8 @@ package day02
 
 import (
 	"aoc2023/utils"
+	"fmt"
 	"testing"
-
-	"github.com/charmbracelet/log"
 )
 
 func TestPart1(t *testing.T) {
@@ -24,7 +23,7 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
 	if result != answer {
 		t.Fatalf("Failed!: %v != %v", answer, result)
 	}
-	log.Infof("Solved!: %v == %v", answer, result)
+	fmt.Println(fmt.Sprintf("Part 1 [%s]: %v == %v", utils.FormatGreen("solved"), answer, result))
 }
 
 func TestPart2(t *testing.T) {
@@ -44,5 +43,5 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
 	if result != answer {
 		t.Fatalf("Failed!: %v != %v", answer, result)
 	}
-	log.Infof("Solved!: %v == %v", answer, result)
+	fmt.Println(fmt.Sprintf("Part 2 [%s]: %v == %v", utils.FormatGreen("solved"), answer, result))
 }

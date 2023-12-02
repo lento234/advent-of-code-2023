@@ -19,12 +19,12 @@ university coursework, practice problems, or to challenge each other.
 
 ## Calendar
 
-| M      | T   | W   | T   | F   | *S* | *S* |
-| ------ | --- | --- | --- | --- | --- | --- |
-|        |     |     |     | 1   | 2   | 3   |
-| 4      | 5   | 6   | 7   | 8   | 9   | 10  |
-| 11     | 12  | 13  | 14  | 15  | 16  | 17  |
-| 18     | 19  | 20  | 21  | 22  | 23  | 24  |
+| M       | T   | W   | T   | F   | *S* | *S* |
+|---------|-----|-----|-----|-----|-----|-----|
+|         |     |     |     | 1   | 2   | 3   |
+| 4       | 5   | 6   | 7   | 8   | 9   | 10  |
+| 11      | 12  | 13  | 14  | 15  | 16  | 17  |
+| 18      | 19  | 20  | 21  | 22  | 23  | 24  |
 | [🎁][1] |     |     |     |     |     |     |
 
 ## Setup
@@ -51,10 +51,16 @@ university coursework, practice problems, or to challenge each other.
 ./aoc2023 run --day <day>
 ```
 
-**Run tests**
+**Run tests:**
 
 ```bash
-go test ./day*
+go test -bench -v ./day*
+```
+
+**Run benchmarks:** (with memory allocation statistics and `GOMAXPROCS` set to 1, 4 and 8, 24)
+
+```bash
+go test -run=^$ -bench=. -benchmem -cpu=1,4,8,24 ./...
 ```
 
 **Easter eggs**
