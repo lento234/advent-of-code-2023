@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"bytes"
+	"bufio"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/yuin/goldmark"
+	"golang.org/x/net/html"
 )
 
 const (
@@ -32,10 +33,10 @@ func initDay(day int) error {
 	// }
 
 	// Fetch description
-	// err := fetchDescription(dirName, day)
+	err := fetchDescription(dirName, day)
 
 	// Fetch input
-	err := fetchInput(dirName, day)
+	// err := fetchInput(dirName, day)
 	// fmt.Sprintf("%s/%d/input", URL, day)
 
 	if err != nil {
@@ -51,23 +52,61 @@ func fetchDescription(dirName string, day int) error {
 	url := fmt.Sprintf("%s/%d", URL, day)
 	fmt.Println("Getting description from:", url)
 
-	data, err := getHtmlData(url)
+	body, err := getHtmlBody(url)
+	if err != nil {
+		return err
+	}
+	bodyStr := string(body)
+
+	// Parse html
+	doc, err := html.Parse(strings.NewReader(bodyStr))
 	if err != nil {
 		return err
 	}
 
-	var buf bytes.Buffer
-	if err := goldmark.Convert(data, &buf); err != nil {
-		return err
+	// Find the <article> tag
+	node := make([]*html.Node, 0)
+
+	var findArticle func(*html.Node)
+	findArticle = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "article" {
+			node = append(node, n)
+			// for k := n.FirstChild; k != nil; k = n.NextSibling {
+			// 	fmt.Println(k)
+			// }
+			return
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			findArticle(c)
+		}
+	}
+	findArticle(doc)
+
+	if node == nil {
+		return fmt.Errorf("Article tag not found")
 	}
 
-	// err = os.WriteFile("text.txt", []byte(buf.String()), 0644)
-	fmt.Println(buf.String())
-	return err
+	for _, n := range node {
+		// goldmark.Convert()
+		var src bufio.Writer
+		var dst bufio.Writer
+		html.Render(&src, n)
+		// html.Render()
+		// fmt.Println(sb.String())
+		err := goldmark.Convert(src, dst)
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(dst))
+	}
+
+	// // err = os.WriteFile("text.txt", []byte(buf.String()), 0644)
+	// fmt.Println(buf.String())
+	return nil
 
 }
 
-func getHtmlData(url string) ([]byte, error) {
+func getHtmlBody(url string) ([]byte, error) {
 	// Parse cookie
 	cookieBuf, err := os.ReadFile(".cookie")
 	if err != nil {
@@ -76,32 +115,40 @@ func getHtmlData(url string) ([]byte, error) {
 	cookie := strings.TrimSuffix(string(cookieBuf), "\n")
 
 	// Setup request
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 	// Set cookie
-	req.Header.Set("Cookie", fmt.Sprintf("session=%s", string(cookie)))
+	req.AddCookie(&http.Cookie{
+		Name:  "session",
+		Value: string(cookie),
+	})
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("Error %s: %s", resp.Status, body)
 	}
 	// Read response
-	data, err := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	return data, nil
+	return body, nil
 
 }
 
 func fetchInput(dirName string, day int) error {
 	url := fmt.Sprintf("%s/%d/input", URL, day)
 
-	data, err := getHtmlData(url)
+	body, err := getHtmlBody(url)
 	if err != nil {
 		return err
 	}
@@ -109,7 +156,7 @@ func fetchInput(dirName string, day int) error {
 	// Write to file
 	fileName := filepath.Join(dirName, "input.txt")
 	fmt.Printf("Writing input: %s\n", fileName)
-	err = os.WriteFile(fileName, data, 0644)
+	err = os.WriteFile(fileName, body, 0644)
 	if err != nil {
 		return err
 	}
