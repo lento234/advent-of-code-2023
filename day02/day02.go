@@ -53,6 +53,55 @@ game:
 	return result
 }
 
+func part2(input []string) int {
+	result := 0
+
+	for _, line := range input {
+		gameInfo := strings.SplitN(line, ":", 2)
+
+		minDices := map[string]int{
+			"red":   0,
+			"blue":  0,
+			"green": 0,
+		}
+
+		// Check dices
+		draws := strings.Split(gameInfo[1], ";")
+		for _, draw := range draws {
+			// fmt.Println("draw", i, "->", draw)
+			dicesInfo := strings.Split(strings.Trim(draw, " "), ",")
+
+			dices := map[string]int{
+				"red":   0,
+				"blue":  0,
+				"green": 0,
+			}
+			for _, diceInfo := range dicesInfo {
+				diceInfo := strings.SplitN(strings.Trim(diceInfo, " "), " ", 2)
+				n, err := strconv.Atoi(diceInfo[0])
+				utils.CheckErr(err)
+				dices[diceInfo[1]] = n
+			}
+			// fmt.Println("draw", i, "->", dices)
+
+			for k, v := range dices {
+				minDices[k] = max(minDices[k], v)
+			}
+
+		}
+		power := 1
+		for _, v := range minDices {
+			if v > 0 {
+				power *= v
+			}
+		}
+		// fmt.Println("Game", gameID, "min dices ->", minDices, "power:", power)
+		result += power
+	}
+
+	return result
+}
+
 func Solve() error {
 	// Parse input
 	input := utils.ParseFile("day02/input.txt")
@@ -61,9 +110,9 @@ func Solve() error {
 	result := part1(input)
 	fmt.Println("Part 1:", result)
 
-	// // Test part 1
-	// result = part2(input)
-	// fmt.Println("Part 2:", result)
+	// Test part 1
+	result = part2(input)
+	fmt.Println("Part 2:", result)
 
 	return nil
 }
