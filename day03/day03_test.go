@@ -31,17 +31,26 @@ func TestPart1(t *testing.T) {
 	fmt.Printf("Part 1 [%s]: %v == %v\n", utils.FormatGreen("solved"), answer, result)
 }
 
-// func TestPart2(t *testing.T) {
+func TestPart2(t *testing.T) {
 
-// 	// Test part 2
-// 	puzzle := `<puzzle>`
-// 	answer := `<answer>`
+	// Test part 2
+	puzzle := `467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..`
+	answer := 467835
 
-// 	// Solve
-// 	result := part2(utils.ParseString(puzzle))
+	// Solve
+	result := part2(utils.ParseString(puzzle))
 
-// 	if result != answer {
-// 		t.Fatalf("Failed!: %v != %v", answer, result)
-// 	}
-// 	fmt.Printf("Part 2 [%s]: %v == %v\n", utils.FormatGreen("solved"), answer, result)
-// }
+	if result != answer {
+		t.Fatalf("Failed!: %v != %v", answer, result)
+	}
+	fmt.Printf("Part 2 [%s]: %v == %v\n", utils.FormatGreen("solved"), answer, result)
+}

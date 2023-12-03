@@ -87,7 +87,7 @@ func part1(input []string) int {
 		for j, l := range line {
 			if strings.Contains("+*#@/=&$%-", string(l)) {
 				numbers := getAdjacentNumbers(input, Pos{i, j})
-				fmt.Printf("(%d, %d): %c -> %v\n", i, j, l, numbers)
+				// fmt.Printf("(%d, %d): %c -> %v\n", i, j, l, numbers)
 				for _, number := range numbers {
 					// if !slices.Contains(parts, number) {
 					parts = append(parts, number)
@@ -103,10 +103,21 @@ func part1(input []string) int {
 	return result
 }
 
-// func part2(input []string) int {
-// 	result := 0
-// 	return result
-// }
+func part2(input []string) int {
+	result := 0
+
+	for i, line := range input {
+		for j, l := range line {
+			if string(l) == "*" {
+				numbers := getAdjacentNumbers(input, Pos{i, j})
+				if len(numbers) > 1 {
+					result += utils.Prod(numbers)
+				}
+			}
+		}
+	}
+	return result
+}
 
 func Solve() error {
 	// Parse input
@@ -116,9 +127,9 @@ func Solve() error {
 	result := part1(input)
 	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 1"), result)
 
-	// // Part 2
-	// result = part2(input)
-	// fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
+	// Part 2
+	result = part2(input)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
 
 	return nil
 }
