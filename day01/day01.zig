@@ -8,14 +8,15 @@ fn isNumber(char: u8) bool {
 }
 
 pub fn main() !void {
-    std.debug.print("Advent of code: day {d}\n", .{1});
+    // std.debug.print("Advent of code: day {d}\n", .{1});
+    std.log.info("Advent of code: day {}", .{1});
 
     // Read file
     var buffer: [32768]u8 = undefined;
     // const data = try std.fs.cwd().readFile("test_input.txt", &buffer);
     const data = try std.fs.cwd().readFile("input.txt", &buffer);
     const len = data.len;
-    std.debug.print("{d} bytes read!\n", .{len});
+    std.log.info("{} bytes read!", .{len});
 
     // Split data to lines
     var lines = std.mem.tokenize(u8, data, "\n");
@@ -43,5 +44,5 @@ pub fn main() !void {
         result += @as(u32, value);
     }
 
-    std.debug.print("Result: {d}\n", .{result});
+    std.log.info("Result: {}", .{result});
 }
