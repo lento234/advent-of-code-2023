@@ -8,6 +8,7 @@ require (
 	github.com/charmbracelet/log v0.3.1
 	github.com/spf13/cobra v1.8.0
 	golang.org/x/net v0.19.0
+	golang.org/x/text v0.14.0
 )
 
 require (

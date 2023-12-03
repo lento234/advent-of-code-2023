@@ -1,4 +1,4 @@
-package day{{.day}}
+package day03
 
 import (
 	"aoc2023/utils"
@@ -9,8 +9,19 @@ import (
 func TestPart1(t *testing.T) {
 
 	// Test part 1
-	puzzle := `<puzzle>`
-	answer := `<answer>`
+	puzzle := `
+467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..`
+
+	answer := 4361
 
 	// Solve
 	result := part1(utils.ParseString(puzzle))
