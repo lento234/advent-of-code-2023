@@ -3,7 +3,6 @@ package day03
 import (
 	"aoc2023/utils"
 	"fmt"
-	"log"
 	"strings"
 )
 
@@ -17,9 +16,7 @@ func getAdjacentNumbers(input []string, pos Pos) []int {
 
 	for i := pos.i - 1; i <= pos.i+1; i++ {
 		digits, err := utils.StringToDigits(input[i])
-		if err != nil {
-			log.Fatal(err)
-		}
+		utils.CheckErr(err)
 		for _, digit := range digits {
 			if pos.j <= digit.End+1 && pos.j >= digit.Start-1 {
 				numbers = append(numbers, digit.Value)
@@ -60,7 +57,7 @@ func part2(input []string) int {
 	return result
 }
 
-func Solve() error {
+func Solve() {
 	// Parse input
 	input := utils.ParseFile("day03/input.txt")
 
@@ -71,6 +68,4 @@ func Solve() error {
 	// Part 2
 	result = part2(input)
 	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
-
-	return nil
 }
