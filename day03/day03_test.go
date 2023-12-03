@@ -9,8 +9,7 @@ import (
 func TestPart1(t *testing.T) {
 
 	// Test part 1
-	puzzle := `
-467..114..
+	puzzle := `467..114..
 ...*......
 ..35..633.
 ......#...

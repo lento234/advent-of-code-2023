@@ -1,0 +1,29 @@
+default:
+  loglevel: script
+  args:
+    - day: "03"
+
+build:
+  description: build project
+  script:
+    - go build
+
+lint:
+  description: run golangci-lint linter
+  script:
+    - golangci-lint run
+
+run:
+  description: run challenge of the day
+  script:
+    - go run . run --day {{ day }}
+
+test:
+  description: test challenge of the day
+  script:
+    - go test -bench -v ./day{{ day }}
+
+bench:
+  description: benchmark challenge of the day
+  script:
+    - go test -run=^$ -bench=. -benchmem -cpu=1,4,8,24 ./day{{ day }}
