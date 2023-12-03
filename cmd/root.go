@@ -49,7 +49,7 @@ var initCmd = &cobra.Command{
 	Short: "Initialize a new day",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if day <= 0 || day > 24 {
-			return fmt.Errorf("day %d is not an advent day.", day)
+			return fmt.Errorf("day %d is not an advent day", day)
 		}
 		err := initDay(day)
 		if err != nil {
@@ -65,7 +65,7 @@ var runCmd = &cobra.Command{
 	Short: "Run the challenge of the day",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if day <= 0 || day > 24 {
-			return fmt.Errorf("day %d is not an advent day.", day)
+			return fmt.Errorf("day %d is not an advent day", day)
 		}
 		// Calling challenge of the day
 		if day > len(challenges) {
@@ -93,12 +93,18 @@ func init() {
 	// Initizalize the day
 	rootCmd.AddCommand(initCmd)
 	initCmd.Flags().IntVar(&day, "day", 0, "Day to initialize")
-	initCmd.MarkFlagRequired("day")
+	err := initCmd.MarkFlagRequired("day")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Run the challenge of the day
 	rootCmd.AddCommand(runCmd)
 	runCmd.Flags().IntVar(&day, "day", 0, "Day to initialize")
-	runCmd.MarkFlagRequired("day")
+	err = runCmd.MarkFlagRequired("day")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func Execute() {

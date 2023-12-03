@@ -36,9 +36,7 @@ func part1(input []string) int {
 		for j, l := range line {
 			if strings.Contains("+*#@/=&$%-", string(l)) {
 				numbers := getAdjacentNumbers(input, Pos{i, j})
-				for _, number := range numbers {
-					parts = append(parts, number)
-				}
+				parts = append(parts, numbers...)
 			}
 		}
 	}
