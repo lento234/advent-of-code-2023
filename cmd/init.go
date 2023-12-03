@@ -25,27 +25,27 @@ func initDay(day int) error {
 	// Initializing directory
 	dirName := fmt.Sprintf("day%02d", day)
 	_, err := os.Stat(dirName)
+
 	if os.IsNotExist(err) {
+
 		log.Infof("Creating folder: '%s/'", dirName)
 		if err := os.Mkdir(dirName, os.ModePerm); err != nil {
 			return err
 		}
-	}
-
-	// Copy templates
-	err = setupTemplates(dirName, day)
-	if err != nil {
-		return err
+		// Copy templates
+		err = setupTemplates(dirName, day)
+		if err != nil {
+			return err
+		}
+		// Fetch input
+		err = fetchInput(dirName, day)
+		if err != nil {
+			return err
+		}
 	}
 
 	// Fetch description
 	err = fetchDescription(dirName, day)
-	if err != nil {
-		return err
-	}
-
-	// Fetch input
-	err = fetchInput(dirName, day)
 	if err != nil {
 		return err
 	}

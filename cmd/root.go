@@ -3,6 +3,7 @@ package cmd
 import (
 	"aoc2023/day01"
 	"aoc2023/day02"
+	"aoc2023/day03"
 	"aoc2023/utils"
 	"fmt"
 	"os"
@@ -18,6 +19,7 @@ var day int
 var challenges = []interface{}{
 	day01.Solve,
 	day02.Solve,
+	day03.Solve,
 }
 
 // rootCmd represents the base command when called without any subcommands
