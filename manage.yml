@@ -26,4 +26,4 @@ test:
 bench:
   description: benchmark challenge of the day
   script:
-    - go test -run=^$ -bench=. -benchmem -cpu=1,4,8,24 ./day{{ day }}
+    - go test -run=^$ -bench=. -benchmem ./day{{ day }}
