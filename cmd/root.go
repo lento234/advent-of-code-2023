@@ -77,11 +77,7 @@ var runCmd = &cobra.Command{
 
 		// Solve challenge
 		fmt.Println(utils.FormatMagenta(fmt.Sprintf("Challenge day %d:", day)))
-		res := f.Call([]reflect.Value{})
-		err := res[0].Interface()
-		if err != nil {
-			log.Fatal(err)
-		}
+		f.Call([]reflect.Value{})
 
 		return nil
 	},

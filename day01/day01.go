@@ -70,7 +70,7 @@ func part2(input []string) int {
 	return result
 }
 
-func Solve() error {
+func Solve() {
 	// Parse input
 	input := utils.ParseFile("day01/input.txt")
 
@@ -82,5 +82,4 @@ func Solve() error {
 	result = part2(input)
 	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
 
-	return nil
 }
