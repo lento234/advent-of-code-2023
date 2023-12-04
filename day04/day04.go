@@ -40,10 +40,33 @@ func part1(input []string) int {
 	return result
 }
 
-// func part2(input []string) int {
-// 	result := 0
-// 	return result
-// }
+func part2(input []string) int {
+	nScratchcards := len(input)
+
+	instances := make([]int, nScratchcards)
+	for i := range instances {
+		instances[i] = 1
+	}
+
+	for i, line := range input {
+
+		game := strings.SplitN(line, ":", 2)
+		scratchcard := strings.SplitN(game[1], "|", 2)
+		winnings := utils.StringToNumbers(scratchcard[0], " ")
+		numbers := utils.StringToNumbers(scratchcard[1], " ")
+
+		k := 1
+		for _, value := range winnings {
+			if slices.Contains(numbers, value) && (i+k) <= nScratchcards {
+				instances[i+k] += instances[i]
+				k += 1
+			}
+		}
+
+		// fmt.Printf("%d: %s -> %v\n", i, line, instances[i])
+	}
+	return utils.Sum(instances)
+}
 
 func Solve() error {
 	// Parse input
@@ -53,9 +76,9 @@ func Solve() error {
 	result := part1(input)
 	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 1"), result)
 
-	// // Part 2
-	// result = part2(input)
-	// fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
+	// Part 2
+	result = part2(input)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
 
 	return nil
 }
