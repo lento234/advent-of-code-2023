@@ -38,3 +38,18 @@ func StringToDigits(text string) ([]Digit, error) {
 	}
 	return digits, nil
 }
+
+func StringToNumbers(text, delimiter string) []int {
+
+	numbers := make([]int, 0)
+
+	numbersStr := strings.Split(text, " ")
+
+	for _, numStr := range numbersStr {
+		num, err := strconv.Atoi(numStr)
+		if err == nil {
+			numbers = append(numbers, num)
+		}
+	}
+	return numbers
+}

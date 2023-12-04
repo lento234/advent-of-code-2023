@@ -1,7 +1,7 @@
 default:
   loglevel: script
   args:
-    - day: "03"
+    - day: "04"
 
 build:
   description: build project
@@ -27,3 +27,8 @@ bench:
   description: benchmark challenge of the day
   script:
     - go test -run=^$ -bench=. -benchmem ./day{{ day }}
+
+init:
+  description: initialize challenge of the day
+  script:
+    - go run . init --day {{ day }}
