@@ -56,6 +56,10 @@ fn findDigit(string: []const u8, substr: []const u8) ?usize {
     return std.mem.indexOf(u8, string, substr);
 }
 
+fn findDigitPos(string: []const u8, start_index: usize, substr: []const u8) ?usize {
+    return std.mem.indexOfPos(u8, string, start_index, substr);
+}
+
 fn part2(data: []const u8) !u32 {
 
     // Split data to lines
@@ -74,10 +78,13 @@ fn part2(data: []const u8) !u32 {
         defer list.deinit();
 
         var k: u8 = 1;
+
         while (wDigits.next()) |digit| {
-            if (findDigit(line, digit)) |idx| {
+            var idx: usize = 0;
+            while (findDigitPos(line, idx, digit)) |newidx| {
                 try list.append(k);
-                try loc.append(idx);
+                try loc.append(newidx);
+                idx = newidx + 1;
             }
             k += 1;
         }
@@ -85,9 +92,11 @@ fn part2(data: []const u8) !u32 {
 
         k = 1;
         while (nDigits.next()) |digit| {
-            if (findDigit(line, digit)) |idx| {
+            var idx: usize = 0;
+            while (findDigitPos(line, idx, digit)) |newidx| {
                 try list.append(k);
-                try loc.append(idx);
+                try loc.append(newidx);
+                idx = newidx + 1;
             }
             k += 1;
         }
@@ -96,16 +105,10 @@ fn part2(data: []const u8) !u32 {
         var minIdx: usize = std.mem.indexOfMin(usize, loc.items);
         var maxIdx: usize = std.mem.indexOfMax(usize, loc.items);
 
-        // print("{d}: {s} -> (min: {d}, max: {d})\n", .{ i, line, list.items[minIdx], list.items[maxIdx] });
-        // for (list.items, loc.items) |l, idx| {
-        //     print("{d} ({d}), ", .{ l, idx });
-        // }
         const value: u8 = list.items[minIdx] * 10 + list.items[maxIdx];
-        // print("{s}", .{"\n"});
-        // print("{d}: {s} -> ({d})\n", .{ i, line, value });
-        i += 1;
-
+        // print("{d}: {d}\n", .{ i, value });
         result += @as(u32, value);
+        i += 1;
     }
 
     return result;
