@@ -1,7 +1,7 @@
 default:
   loglevel: script
   args:
-    - day: "05"
+    - day: "06"
 
 build:
   description: build project
