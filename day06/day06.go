@@ -28,7 +28,7 @@ func part1(input []string) int {
 		totalWins = append(totalWins, calcWins(times[i], distances[i]))
 	}
 
-	return utils.Prod(totalWins)
+	return utils.ProdSlice(totalWins)
 }
 
 func part2(input []string) int {

@@ -65,7 +65,7 @@ func part2(input []string) int {
 
 		// fmt.Printf("%d: %s -> %v\n", i, line, instances[i])
 	}
-	return utils.Sum(instances)
+	return utils.SumSlice(instances)
 }
 
 func Solve() error {

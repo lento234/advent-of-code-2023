@@ -4,7 +4,7 @@ type Number interface {
 	int | int32 | int64 | float32 | float64
 }
 
-func Sum[T Number](arr []T) T {
+func SumSlice[T Number](arr []T) T {
 	result := T(0)
 	for _, v := range arr {
 		result += v
@@ -12,7 +12,7 @@ func Sum[T Number](arr []T) T {
 	return result
 }
 
-func Prod[T Number](arr []T) T {
+func ProdSlice[T Number](arr []T) T {
 	result := T(1)
 	for _, v := range arr {
 		result *= v

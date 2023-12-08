@@ -23,6 +23,12 @@ test:
   script:
     - go test -bench -v ./day{{ day }}
 
+
+test-all:
+  description: run all tests
+  script:
+    - go test -bench -v ./...
+
 bench:
   description: benchmark challenge of the day
   script:

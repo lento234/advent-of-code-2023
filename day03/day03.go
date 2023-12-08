@@ -38,7 +38,7 @@ func part1(input []string) int {
 		}
 	}
 	// Sum all parts
-	return utils.Sum(parts)
+	return utils.SumSlice(parts)
 }
 
 func part2(input []string) int {
@@ -49,7 +49,7 @@ func part2(input []string) int {
 			if string(r) == "*" {
 				numbers := getAdjacentNumbers(input, Pos{i, j})
 				if len(numbers) > 1 {
-					result += utils.Prod(numbers)
+					result += utils.ProdSlice(numbers)
 				}
 			}
 		}
