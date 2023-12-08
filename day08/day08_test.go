@@ -47,17 +47,27 @@ ZZZ = (ZZZ, ZZZ)`
 	fmt.Printf("Part 1 [%s]: %v == %v\n", utils.FormatGreen("solved"), answer, result)
 }
 
-// func TestPart2(t *testing.T) {
+func TestPart2(t *testing.T) {
 
-// 	// Test part 2
-// 	puzzle := `<puzzle>`
-// 	answer := `<answer>`
+	// Test part 2
+	puzzle := `LR
 
-// 	// Solve
-// 	result := part2(utils.ParseString(puzzle))
+11A = (11B, XXX)
+11B = (XXX, 11Z)
+11Z = (11B, XXX)
+22A = (22B, XXX)
+22B = (22C, 22C)
+22C = (22Z, 22Z)
+22Z = (22B, 22B)
+XXX = (XXX, XXX)`
 
-// 	if result != answer {
-// 		t.Fatalf("Failed!: %v != %v", answer, result)
-// 	}
-// 	fmt.Printf("Part 2 [%s]: %v == %v\n", utils.FormatGreen("solved"), answer, result)
-// }
+	answer := 6
+
+	// Solve
+	result := part2(utils.ParseString(puzzle))
+
+	if result != answer {
+		t.Fatalf("Failed!: %v != %v", answer, result)
+	}
+	fmt.Printf("Part 2 [%s]: %v == %v\n", utils.FormatGreen("solved"), answer, result)
+}
