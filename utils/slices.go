@@ -19,3 +19,11 @@ func Prod[T Number](arr []T) T {
 	}
 	return result
 }
+
+func LCMSlice(arr []int) int {
+	result := LCM(arr[0], arr[1])
+	for i := 2; i < len(arr); i++ {
+		result = LCM(result, arr[i])
+	}
+	return result
+}

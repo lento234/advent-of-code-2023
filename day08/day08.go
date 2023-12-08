@@ -82,52 +82,30 @@ func part1(input []string) int {
 	return k
 }
 
-func GCD(a, b int) int {
-	for b != 0 {
-		t := b
-		b = a % b
-		a = t
-	}
-	return a
-}
-
-func LCM(a, b int) int {
-	return a * b / GCD(a, b)
-}
-
 func part2(input []string) int {
 	ins := parseLR(input[0])
 
 	path := parsePath(input)
 
-	startKeys := make([]string, 0)
+	keys := make([]string, 0)
 	for k, v := range path {
 		if v.start {
-			startKeys = append(startKeys, k)
+			keys = append(keys, k)
 		}
 	}
-	keys := startKeys
-	start := make([]int, len(keys))
-	cycles := make([]int, len(keys))
-	found := make([]int, len(keys))
 
+	nFound := 0
 	i := 0
 	steps := 0
+	cycles := make([]int, len(keys))
 	for {
-		isEnd := true
 		for k := 0; k < len(keys); k++ {
-			isEnd = isEnd && path[keys[k]].end
-			if path[keys[k]].end {
-				if found[k] == 0 {
-					start[k] = steps
-					found[k] += 1
-				} else if found[k] == 1 {
-					cycles[k] = steps - start[k]
-					found[k] += 1
-				}
+			if path[keys[k]].end && cycles[k] == 0 {
+				cycles[k] = steps
+				nFound += 1
 			}
 		}
-		if isEnd || utils.Sum(found) >= len(cycles)*2 {
+		if len(cycles) == nFound {
 			break
 		}
 		for k := 0; k < len(keys); k++ {
@@ -138,12 +116,7 @@ func part2(input []string) int {
 		steps += 1
 	}
 
-	result := LCM(cycles[0], cycles[1])
-	for i := 2; i < len(cycles); i++ {
-		result = LCM(result, cycles[i])
-	}
-
-	return result
+	return utils.LCMSlice(cycles)
 }
 
 func Solve() {
