@@ -10,7 +10,10 @@ func history(numbers []int, index int, operator func(a, b int) int) int {
 	// check if layer is all zeros
 	allZeros := true
 	for _, n := range numbers {
-		allZeros = allZeros && (n == 0)
+		if n != 0 {
+			allZeros = false
+			break
+		}
 	}
 	if allZeros {
 		return numbers[len(numbers)-1]

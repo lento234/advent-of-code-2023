@@ -37,6 +37,11 @@ bench:
       DAY=$(printf "day%02d" {{ day }})
       go test -run=^$ -bench=. -benchmem "./${DAY}"
 
+bench-all:
+  description: benchmark all days
+  script:
+    - go test -run=^$ -bench=. -benchmem ./...
+
 init:
   description: initialize challenge of the day
   script:
