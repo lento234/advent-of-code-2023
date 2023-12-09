@@ -1,7 +1,7 @@
 default:
   loglevel: script
   args:
-    - day: "08"
+    - day: 8
 
 build:
   description: build project
@@ -21,8 +21,9 @@ run:
 test:
   description: test challenge of the day
   script:
-    - go test -bench -v ./day{{ day }}
-
+    - |
+      DAY=$(printf "day%02d" {{ day }})
+      go test -bench -v "./${DAY}"
 
 test-all:
   description: run all tests
@@ -32,7 +33,9 @@ test-all:
 bench:
   description: benchmark challenge of the day
   script:
-    - go test -run=^$ -bench=. -benchmem ./day{{ day }}
+    - |
+      DAY=$(printf "day%02d" {{ day }})
+      go test -run=^$ -bench=. -benchmem "./${DAY}"
 
 init:
   description: initialize challenge of the day

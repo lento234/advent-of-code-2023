@@ -9,21 +9,22 @@ import (
 )
 
 func runeToStrength(card rune, part int) int {
-	if card == 'A' {
+	switch card {
+	case 'A':
 		return 14
-	} else if card == 'K' {
+	case 'K':
 		return 13
-	} else if card == 'Q' {
+	case 'Q':
 		return 12
-	} else if card == 'J' {
+	case 'J':
 		if part == 1 {
 			return 11
 		} else {
 			return 1
 		}
-	} else if card == 'T' {
+	case 'T':
 		return 10
-	} else {
+	default:
 		return int(card - '0')
 	}
 }

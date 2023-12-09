@@ -21,11 +21,11 @@ func part1(input []string) int {
 
 		// Count number of winnings
 		nWinnings := 0
-		validWinnings := make([]int, 0)
+		// validWinnings := make([]int, 0)
 		for _, value := range winnings {
 			if slices.Contains(numbers, value) {
 				nWinnings += 1
-				validWinnings = append(validWinnings, value)
+				// validWinnings = append(validWinnings, value)
 			}
 		}
 		if nWinnings > 0 {
