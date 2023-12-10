@@ -73,7 +73,7 @@ func (g *Grid) print(start Pos) {
 			if start.i == i && start.j == j {
 				value = utils.FormatGreen(value)
 			}
-			fmt.Printf(value)
+			fmt.Printf("%s", value)
 		}
 		fmt.Printf("\n")
 	}
@@ -244,7 +244,8 @@ func part2(input []string) int {
 			if r == 'F' || r == '7' || r == '|' || r == 'S' {
 				idx = (idx + 1) % 2
 			} else if r == '?' {
-				fill.setRune(p, marks[idx])
+				err := fill.setRune(p, marks[idx])
+				utils.CheckErr(err)
 			}
 		}
 	}
