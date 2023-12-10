@@ -57,6 +57,14 @@ func (g *Grid) getRune(p Pos) (rune, error) {
 	return '0', fmt.Errorf("position %v out of bounds", p)
 }
 
+func (g *Grid) setRune(p Pos, r rune) error {
+	if p.i >= 0 && p.i < g.nrows && p.j >= 0 && p.j < g.ncols {
+		g.grid[g.ncols*p.i+p.j] = r
+		return nil
+	}
+	return fmt.Errorf("position %v out of bounds", p)
+}
+
 func (g *Grid) print(start Pos) {
 	for i := 0; i < g.nrows; i++ {
 		for j := 0; j < g.ncols; j++ {
@@ -152,7 +160,7 @@ func part1(input []string, startRune rune) int {
 	// Starting position
 	startPos, err := grid.findStartPos(startRune)
 	utils.CheckErr(err)
-	fmt.Printf("Starting pos: %v\n", startPos)
+	// fmt.Printf("Starting pos: %v\n", startPos)
 
 	// Print grid
 	// grid.print(startPos)
@@ -183,10 +191,80 @@ func part1(input []string, startRune rune) int {
 	return steps / 2
 }
 
-// func part2(input []string) int {
-// 	result := 0
-// 	return result
-// }
+func initFill(g *Grid) Grid {
+
+	fill := make([]rune, 0, g.nrows*g.ncols)
+
+	for i := 0; i < g.nrows; i++ {
+		for j := 0; j < g.ncols; j++ {
+			fill = append(fill, '?')
+		}
+	}
+	return Grid{grid: fill, nrows: g.nrows, ncols: g.ncols}
+}
+
+func part2(input []string) int {
+
+	// Make grid
+	grid := makeGrid(input)
+	startRune := 'S'
+	startPos, err := grid.findStartPos(startRune)
+	utils.CheckErr(err)
+
+	// grid.print(startPos)
+
+	pos, dir, err := grid.getNextValidDirection(startPos)
+	utils.CheckErr(err)
+
+	fill := initFill(&grid)
+
+	// fmt.Printf("Start travelling: from %v -> to %v: dir %v\n", startPos, pos, dir)
+	for {
+		r, err := grid.getRune(pos)
+		utils.CheckErr(err)
+
+		// // mark path
+		err = fill.setRune(pos, r)
+		utils.CheckErr(err)
+
+		if r == startRune {
+			break
+		}
+		pos, dir, err = grid.next(pos, dir)
+		utils.CheckErr(err)
+	}
+
+	// flood fill
+	marks := []rune{'0', '1'}
+	for i := 0; i < fill.nrows; i++ {
+		idx := 0
+		for j := 0; j < fill.ncols; j++ {
+			p := Pos{i, j}
+			r, _ := fill.getRune(p)
+			if r == 'F' || r == '7' || r == '|' || r == 'S' {
+				idx = (idx + 1) % 2
+			} else if r == '?' {
+				fill.setRune(p, marks[idx])
+			}
+		}
+	}
+
+	// fmt.Println("After:")
+	// fill.print(startPos)
+
+	result := 0
+	for i := 0; i < fill.nrows; i++ {
+		for j := 0; j < fill.ncols; j++ {
+			p := Pos{i, j}
+			r, _ := fill.getRune(p)
+			if r == '1' {
+				result += 1
+			}
+		}
+	}
+
+	return result
+}
 
 func Solve() {
 	// Parse input
@@ -196,7 +274,7 @@ func Solve() {
 	result := part1(input, 'S')
 	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 1"), result)
 
-	// // Part 2
-	// result = part2(input)
-	// fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
+	// Part 2
+	result = part2(input)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
 }
