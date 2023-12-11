@@ -90,6 +90,8 @@ func (g *Grid) next(cur Pos, dir Dir) (Pos, Dir, error) {
 	// - `J` is a _90-degree bend_ connecting north and west.
 	// - `7` is a _90-degree bend_ connecting south and west.
 	// - `F` is a _90-degree bend_ connecting south and east.
+
+	//nolint:all
 	if r == '|' && dir == Up {
 		return Pos{cur.i - 1, cur.j}, dir, nil
 	} else if r == '|' && dir == Down {

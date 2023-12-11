@@ -12,3 +12,10 @@ func GCD(a, b int) int {
 func LCM(a, b int) int {
 	return a * b / GCD(a, b)
 }
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
