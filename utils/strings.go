@@ -43,7 +43,7 @@ func StringToNumbers(text, delimiter string) []int {
 
 	numbers := make([]int, 0)
 
-	numbersStr := strings.Split(text, " ")
+	numbersStr := strings.Split(text, delimiter)
 
 	for _, numStr := range numbersStr {
 		num, err := strconv.Atoi(numStr)
