@@ -62,10 +62,39 @@ func part1(input []string) int {
 	return result
 }
 
-// func part2(input []string) int {
-// 	result := 0
-// 	return result
-// }
+func repeat(word, sep string, count int) string {
+	repeated := make([]string, 0)
+	for i := 0; i < count; i++ {
+		repeated = append(repeated, word)
+	}
+	return strings.Join(repeated, sep)
+}
+
+func part2(input []string) int {
+	result := 0
+	repeatCount := 5
+
+	for i, line := range input {
+		// if i == 0 {
+		// Parse
+		splitted := strings.SplitN(line, " ", 2)
+		springs := strings.TrimSpace(splitted[0])
+		unfoldedSprings := repeat(springs, "?", repeatCount)
+
+		recordStr := strings.TrimSpace(splitted[1])
+		unfoldedRecordStr := repeat(recordStr, ",", repeatCount)
+		unfoldedRecord := utils.StringToNumbers(unfoldedRecordStr, ",")
+
+		// fmt.Printf("%d: %s -> %v\n", i, unfoldedSprings, unfoldedRecord)
+		// Status
+		value := findArrangement(unfoldedSprings, unfoldedRecord)
+
+		fmt.Printf("%d: %s -> %v (%d)\n", i, unfoldedSprings, unfoldedRecord, value)
+		// }
+		result += value
+	}
+	return result
+}
 
 func Solve() {
 	// Parse input
