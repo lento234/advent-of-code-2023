@@ -13,6 +13,7 @@ import (
 	"aoc2023/day10"
 	"aoc2023/day11"
 	"aoc2023/day12"
+	"aoc2023/day13"
 	"aoc2023/utils"
 	"fmt"
 	"os"
@@ -38,6 +39,7 @@ var challenges = []interface{}{
 	day10.Solve,
 	day11.Solve,
 	day12.Solve,
+	day13.Solve,
 }
 
 // rootCmd represents the base command when called without any subcommands
