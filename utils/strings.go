@@ -53,3 +53,11 @@ func StringToNumbers(text, delimiter string) []int {
 	}
 	return numbers
 }
+
+func Reverse(line string) string {
+	rev := []rune(line)
+	for i, j := 0, len(rev)-1; i < j; i, j = i+1, j-1 {
+		rev[i], rev[j] = rev[j], rev[i]
+	}
+	return string(rev)
+}
