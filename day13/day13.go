@@ -42,46 +42,57 @@ func (p *Pattern) getCol(j int) string {
 	return string(col)
 }
 
-func (p *Pattern) isHorizMirror(i int) bool {
+func diff(left, right string) int {
+	n := 0
+	for i := 0; i < len(left); i++ {
+		if left[i] != right[i] {
+			n++
+		}
+	}
+	return n
+}
+
+func (p *Pattern) isHorizMirror(i int, nMaxSmudges int) bool {
 	nrows := len(*p)
 
+	n := 0
 	for k := 0; k < min(i+1, nrows-i-1); k++ {
 		u, d := p.getRow(i-k), p.getRow(i+k+1)
-		if u != d {
+		n += diff(u, d)
+		if n > nMaxSmudges {
 			return false
 		}
 	}
-	return true
+	return n == nMaxSmudges
 }
 
-func (p *Pattern) isVertMirror(j int) bool {
+func (p *Pattern) isVertMirror(j int, nMaxSmudges int) bool {
 	ncols := len((*p)[0])
 
+	n := 0
 	for k := 0; k < min(j+1, ncols-j-1); k++ {
 		l, r := p.getCol(j-k), p.getCol(j+k+1)
-		if l != r {
+		n += diff(l, r)
+		if n > nMaxSmudges {
 			return false
 		}
 	}
-	return true
+	return n == nMaxSmudges
 }
 
-func (p *Pattern) findReflection() (int, error) {
+func (p *Pattern) findReflection(nMaxSmudges int) (int, error) {
 
 	nrows := len(*p)
 	ncols := len((*p)[0])
 
-	// line := (*p)[i]
 	for j := 0; j < ncols-1; j++ {
-		l, r := (*p)[0][j], (*p)[0][j+1]
-		if l == r && p.isVertMirror(j) {
+		if p.isVertMirror(j, nMaxSmudges) {
 			return j + 1, nil
 		}
 	}
 
 	for i := 0; i < nrows-1; i++ {
-		l, r := (*p)[i][0], (*p)[i+1][0]
-		if l == r && p.isHorizMirror(i) {
+		if p.isHorizMirror(i, nMaxSmudges) {
 			return (i + 1) * 100, nil
 		}
 	}
@@ -96,7 +107,7 @@ func part1(input []string) int {
 	patterns := parsePatterns(input)
 
 	for _, p := range patterns {
-		value, err := p.findReflection()
+		value, err := p.findReflection(0)
 		utils.CheckErr(err)
 		result += value
 	}
@@ -104,10 +115,20 @@ func part1(input []string) int {
 	return result
 }
 
-// func part2(input []string) int {
-// 	result := 0
-// 	return result
-// }
+func part2(input []string) int {
+	result := 0
+
+	// Parse patterns
+	patterns := parsePatterns(input)
+
+	for _, p := range patterns {
+		value, err := p.findReflection(1)
+		utils.CheckErr(err)
+		result += value
+	}
+
+	return result
+}
 
 func Solve() {
 	// Parse input
@@ -117,7 +138,7 @@ func Solve() {
 	result := part1(input)
 	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 1"), result)
 
-	// // Part 2
-	// result = part2(input)
-	// fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
+	// Part 2
+	result = part2(input)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
 }
