@@ -27,17 +27,17 @@ func TestPart1(t *testing.T) {
 	}
 }
 
-// func TestPart2(t *testing.T) {
+func TestPart2(t *testing.T) {
 
-// 	// Test part 2
-// 	puzzle := `<puzzle>`
-// 	answer := `<answer>`
+	// Test part 2
+	puzzle := "rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7"
+	answer := 145
 
-// 	// Solve
-// 	result := part2(utils.ParseString(puzzle))
+	// Solve
+	result := part2(utils.ParseString(puzzle))
 
-// 	if result != answer {
-// 		t.Fatalf("Failed!: %v != %v", answer, result)
-// 	}
-// 	fmt.Printf("Part 2 [%s]: %v == %v\n", utils.FormatGreen("solved"), answer, result)
-// }
+	if result != answer {
+		t.Fatalf("Failed!: %v != %v", answer, result)
+	}
+	fmt.Printf("Part 2 [%s]: %v == %v\n", utils.FormatGreen("solved"), answer, result)
+}
