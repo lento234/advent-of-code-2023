@@ -234,17 +234,11 @@ func (g *Grid) trace(beam Beam) []Beam {
 func part1(input []string) int {
 	// Parse grid
 	grid := parseGrid(input)
-
-	// Info
-	grid.print()
-
 	queue := utils.Queue[Beam]{}
 
 	// First beam
 	queue.Push(Beam{pos: Pos{i: 0, j: -1}, dir: Right})
-	// fmt.Printf("queue -> %v: is empty = %v (%d)\n", queue, queue.Empty(), queue.Len())
 
-	nTraced := 0
 	for !queue.Empty() {
 		// Pop
 		beam, err := queue.Pop()
@@ -257,23 +251,58 @@ func part1(input []string) int {
 		for _, b := range splittedBeams {
 			queue.Push(b)
 		}
-		nTraced++
-		// if nTraced > 20 {
-		// 	break
-		// }
 	}
 	result := grid.totalEnergized()
-	fmt.Printf("Finished after %d traces! -> %d\n", nTraced, result)
-	grid.print()
-	grid.printEnergized()
-
 	return result
 }
 
-// func part2(input []string) int {
-// 	result := 0
-// 	return result
-// }
+func totalEnergization(input []string, start Beam) int {
+	// Parse grid
+	grid := parseGrid(input)
+
+	queue := utils.Queue[Beam]{}
+
+	// First beam
+	queue.Push(start)
+
+	for !queue.Empty() {
+		// Pop
+		beam, err := queue.Pop()
+		utils.CheckErr(err)
+
+		// Trace
+		splittedBeams := grid.trace(beam)
+
+		// Adding
+		for _, b := range splittedBeams {
+			queue.Push(b)
+		}
+	}
+	return grid.totalEnergized()
+}
+
+func part2(input []string) int {
+	nrows := len(input)
+	ncols := len(input[0])
+	allEnergizations := make([]int, 0, 2*ncols+2*nrows)
+
+	// All rows
+	for i := 0; i < nrows; i++ {
+		value := totalEnergization(input, Beam{pos: Pos{i, -1}, dir: Right})
+		allEnergizations = append(allEnergizations, value)
+		value = totalEnergization(input, Beam{pos: Pos{i, ncols}, dir: Left})
+		allEnergizations = append(allEnergizations, value)
+	}
+	// All cols
+	for j := 0; j < ncols; j++ {
+		value := totalEnergization(input, Beam{pos: Pos{-1, j}, dir: Down})
+		allEnergizations = append(allEnergizations, value)
+		value = totalEnergization(input, Beam{pos: Pos{nrows, j}, dir: Up})
+		allEnergizations = append(allEnergizations, value)
+	}
+	// fmt.Println("all:", allEnergizations)
+	return slices.Max(allEnergizations)
+}
 
 func Solve() {
 	// Parse input
@@ -283,7 +312,7 @@ func Solve() {
 	result := part1(input)
 	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 1"), result)
 
-	// // Part 2
-	// result = part2(input)
-	// fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
+	// Part 2
+	result = part2(input)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
 }
