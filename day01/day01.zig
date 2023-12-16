@@ -21,11 +21,11 @@ pub fn main() !void {
     const data = try std.fs.cwd().readFile("input.txt", &buffer);
 
     // Part 1
-    var result1 = try part1(data);
+    const result1 = try part1(data);
     print("Part 1: {}\n", .{result1});
 
     // Part 1
-    var result2 = try part2(data);
+    const result2 = try part2(data);
     print("Part 2: {}\n", .{result2});
 }
 
@@ -102,8 +102,8 @@ fn part2(data: []const u8) !u32 {
         }
         nDigits.reset();
 
-        var minIdx: usize = std.mem.indexOfMin(usize, loc.items);
-        var maxIdx: usize = std.mem.indexOfMax(usize, loc.items);
+        const minIdx: usize = std.mem.indexOfMin(usize, loc.items);
+        const maxIdx: usize = std.mem.indexOfMax(usize, loc.items);
 
         const value: u8 = list.items[minIdx] * 10 + list.items[maxIdx];
         // print("{d}: {d}\n", .{ i, value });
