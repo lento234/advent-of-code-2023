@@ -27,9 +27,9 @@ const (
 )
 
 type Beam struct {
-	pos   Pos
-	dir   Dir
-	steps int
+	pos Pos
+	dir Dir
+	// steps int
 }
 
 func (b *Beam) move() {
@@ -43,7 +43,7 @@ func (b *Beam) move() {
 	case Right:
 		b.pos.j++
 	}
-	b.steps++
+	// b.steps++
 }
 
 func (b *Beam) dirStr() string {
@@ -241,7 +241,7 @@ func part1(input []string) int {
 
 	for !queue.Empty() {
 		// Pop
-		beam, err := queue.Pop()
+		beam, err := queue.PopBack()
 		utils.CheckErr(err)
 
 		// Trace
@@ -267,7 +267,7 @@ func totalEnergization(input []string, start Beam) int {
 
 	for !queue.Empty() {
 		// Pop
-		beam, err := queue.Pop()
+		beam, err := queue.PopBack()
 		utils.CheckErr(err)
 
 		// Trace
