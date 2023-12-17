@@ -5,13 +5,14 @@ import (
 	"container/heap"
 	"fmt"
 	"math"
+	"slices"
 )
 
 // Grid
 type Grid struct {
-	field        [][]int
-	visit        [][]bool
-	minHeat      [][]int
+	field [][]int
+	// visit        [][]bool
+	// minHeat      [][]int
 	nrows, ncols int
 }
 
@@ -36,8 +37,8 @@ func parseGrid(input []string) Grid {
 	ncols := len(input[0])
 
 	field := make([][]int, 0, nrows)
-	visit := make([][]bool, 0, nrows)
-	minHeat := make([][]int, 0, nrows)
+	// visit := make([][]bool, 0, nrows)
+	// minHeat := make([][]int, 0, nrows)
 
 	// const maxInt = int(^uint(0) >> 1)
 
@@ -51,10 +52,11 @@ func parseGrid(input []string) Grid {
 			heatLine = append(heatLine, math.MaxInt)
 		}
 		field = append(field, parsedLine)
-		visit = append(visit, visitLine)
-		minHeat = append(minHeat, heatLine)
+		// visit = append(visit, visitLine)
+		// minHeat = append(minHeat, heatLine)
 	}
-	return Grid{field: field, visit: visit, minHeat: minHeat, nrows: nrows, ncols: ncols}
+	// return Grid{field: field, visit: visit, minHeat: minHeat, nrows: nrows, ncols: ncols}
+	return Grid{field: field, nrows: nrows, ncols: ncols}
 }
 
 func (g *Grid) print() {
@@ -69,13 +71,13 @@ func (g *Grid) print() {
 	}
 }
 
-func (g *Grid) mark(p Pos) {
-	g.visit[p.i][p.j] = true
-}
+// func (g *Grid) mark(p Pos) {
+// 	g.visit[p.i][p.j] = true
+// }
 
-func (g *Grid) visited(p Pos) bool {
-	return g.visit[p.i][p.j]
-}
+// func (g *Grid) visited(p Pos) bool {
+// 	return g.visit[p.i][p.j]
+// }
 
 func (g *Grid) inside(p Pos) bool {
 	return p.i >= 0 && p.i < g.nrows && p.j >= 0 && p.j < g.ncols
@@ -84,83 +86,33 @@ func (g *Grid) inside(p Pos) bool {
 func (g *Grid) getNeighbors(b Block) []Block {
 	neighbors := make([]Block, 0)
 
-	p := b.p
+	// p := b.p
 
 	// Add the same direction
-	if g.inside(np) {
-		neighbors = append(neighbors,
-			Block{heat: b.heat + g.field[np.i][np.j], p: np, dir: b.dir, csteps: b.csteps + 1},
-			// Block{heat: b.heat + g.field[np.i][np.j], p: np, dir: b.dir, csteps: b.csteps + 1},
-		)
+	if b.csteps < 3 && (b.dir != Pos{0, 0}) {
+		np := b.p.Add(b.dir)
+		if g.inside(np) {
+			neighbors = append(neighbors,
+				Block{heat: b.heat + g.field[np.i][np.j], p: np, dir: b.dir, csteps: b.csteps + 1},
+			)
+		}
 	}
-	// }
 
-	// // Add other direction
-	// for _, dir := range []Pos{{1, 0}, {-1, 0}, {0, 1}, {0, -1}} {
-	// np := b.p.Add(b.dir)
+	// Add other direction
+	for _, dir := range []Pos{{1, 0}, {-1, 0}, {0, 1}, {0, -1}} {
+		np := b.p.Add(dir)
 
-	// 	if g.inside(np) {
-
-	// 		// Same direction
-	// 		if b.dir == dir {
-	// 			neighbors = append(neighbors,
-	// 				Block{heat: b.heat + g.field[np.i][np.j], p: np, dir: b.dir, csteps: b.csteps + 1},
-	// 			)
-	// 		}
-	// 		if b.dir != dir && b.dir != dir.Neg() {
-	// 			neighbors = append(neighbors,
-	// 				Block{heat: b.heat + g.field[np.i][np.j], p: np, dir: dir, csteps: 1},
-	// 			)
-	// 		}
-	// 	}
-	// }
-
-	// if b.csteps < 3 {
-	// 	if !b.dir.Equal(dir) && !b.dir.Equal(dir.Neg()) {
-	// 		np := b.p.Add(dir)
-	// 		if g.inside(np) {
-	// 			neighbors = append(neighbors,
-	// 				Block{heat: b.heat + g.field[np.i][np.j], p: np, dir: dir, csteps: 1},
-	// 			)
-	// 		}
-	// 	}
-	// }
-
-	// Up
-	// if p.i > 0 && !b.dir.Equal(Pos{1, 0}) {
-	// 	neighbors = append(neighbors, Block{p: Pos{p.i - 1, p.j}, dir: Pos{-1, 0}})
-	// }
-	// // Down
-	// if p.i < g.nrows-1 && !b.dir.Equal(Pos{-1, 0}) {
-	// 	neighbors = append(neighbors, Block{p: Pos{p.i + 1, p.j}, dir: Pos{1, 0}})
-	// }
-	// // Left
-	// if p.j > 0 && !b.dir.Equal(Pos{0, 1}) {
-	// 	neighbors = append(neighbors, Block{p: Pos{p.i, p.j - 1}, dir: Pos{0, -1}})
-	// }
-	// // Right
-	// if p.j < g.ncols-1 && !b.dir.Equal(Pos{0, -1}) {
-	// 	neighbors = append(neighbors, Block{p: Pos{p.i, p.j + 1}, dir: Pos{0, 1}})
-	// }
-
-	// for i := 0; i < len(neighbors); i++ {
-	// 	neighbors[i].csteps = 1
-	// 	if neighbors[i].dir == b.dir {
-	// 		neighbors[i].csteps = b.csteps + 1
-	// 	}
-	// 	np := neighbors[i].p
-	// 	neighbors[i].heat = b.heat + g.field[np.i][np.j]
-	// }
-	// finalNeighbors := make([]Block, 0)
-	// for _, n := range neighbors {
-	// 	if n.csteps <= 3 {
-	// 		finalNeighbors = append(finalNeighbors, n)
-	// 	}
-	// }
-
+		if g.inside(np) {
+			if b.dir != dir && b.dir != dir.Neg() {
+				neighbors = append(neighbors,
+					Block{heat: b.heat + g.field[np.i][np.j], p: np, dir: dir, csteps: 1},
+				)
+			}
+		}
+	}
 	// fmt.Printf("(neighbors): %+v -> %+v\n", b, neighbors)
 
-	// return finalNeighbors
+	return neighbors
 }
 
 // Block
@@ -200,6 +152,11 @@ func (pq PriorityQueue) Swap(i, j int) {
 	pq[i], pq[j] = pq[j], pq[i]
 }
 
+type Visit struct {
+	p, dir Pos
+	csteps int
+}
+
 func part1(input []string) int {
 	// result := 0
 
@@ -208,9 +165,11 @@ func part1(input []string) int {
 
 	pq := PriorityQueue{}
 	heap.Init(&pq)
-	// heap.Push(&pq, Block{heat: 0, p: Pos{0, 0}, dir: Pos{0, 0}, csteps: 1})
-	heap.Push(&pq, Block{heat: 0, p: Pos{0, 0}, dir: Pos{1, 0}, csteps: 0})
-	heap.Push(&pq, Block{heat: 0, p: Pos{0, 0}, dir: Pos{0, 1}, csteps: 0})
+	heap.Push(&pq, Block{heat: 0, p: Pos{0, 0}, dir: Pos{0, 0}, csteps: 0})
+	// heap.Push(&pq, Block{heat: 0, p: Pos{0, 0}, dir: Pos{1, 0}, csteps: 0})
+	// heap.Push(&pq, Block{heat: 0, p: Pos{0, 0}, dir: Pos{0, 1}, csteps: 0})
+
+	visited := make([]Visit, 0)
 
 	iter := 0
 	for pq.Len() > 0 {
@@ -221,19 +180,19 @@ func part1(input []string) int {
 		// Early exit
 		if b.p.Equal(Pos{grid.nrows - 1, grid.ncols - 1}) {
 			fmt.Printf("result => %+v\n", b)
-			break
+			return b.heat
 		}
 
-		// Skip if visited
-		if grid.visited(b.p) {
+		// // Skip if visited
+		if slices.Contains(visited, Visit{b.p, b.dir, b.csteps}) {
 			continue
 		}
-		// mark visited
-		grid.mark(b.p)
+		visited = append(visited, Visit{b.p, b.dir, b.csteps})
 
 		// Get neighbors
 		// Updating queue
 		for _, n := range grid.getNeighbors(b) {
+			// fmt.Printf("n: %+v\n", n)
 			// Calculate new heat
 			// if n.heat < grid.minHeat[n.p.i][n.p.j] && n.csteps <= 3 {
 			// grid.minHeat[n.p.i][n.p.j] = n.heat
@@ -242,52 +201,11 @@ func part1(input []string) int {
 			// }
 			// }
 		}
-
-		// 			// Same direction
-		// 			if !(b.di == 0 && b.dj == 0) && b.csteps < 3 {
-		// 				ni := b.i + b.di
-		// 				nj := b.j + b.dj
-		// 				if grid.inside(ni, nj) {
-		// 					nblock := Block{heat: b.heat + grid.field[ni][nj], i: ni, j: nj, di: b.di, dj: b.dj, csteps: b.csteps + 1}
-		// 					// fmt.Printf("%+v -> %+v (same dir added)\n", b, nblock)
-		// 					heap.Push(&pq, nblock)
-		// 				}
-		// 			}
-
-		// 		for _, nd := range [][]int{{0, 1}, {1, 0}, {0, -1}, {-1, 0}} {
-		// 			ndi, ndj := nd[0], nd[1]
-		// 			if !(ndi == b.di && ndj == b.dj) && !(ndi == -b.di && ndj == -b.dj) {
-		// 				ni := b.i + ndi
-		// 				nj := b.j + ndj
-		// 				// fmt.Println(ndi, ndj)
-		// 				if grid.inside(ni, nj) {
-		// 					nblock := Block{heat: b.heat + grid.field[ni][nj], i: ni, j: nj, di: ndi, dj: ndj, csteps: 1}
-		// 					// fmt.Printf("%+v -> %+v (same dir added)\n", b, nblock)
-		// 					heap.Push(&pq, nblock)
-		// 				}
-		// 			}
-		// 		}
-		// if (n.dir != b.dir) && (n.dir != b.dir.Neg()) {
-		// 	fmt.Printf("%+v -> %+v (diff dir added)\n", b, n)
-		// 	heap.Push(&pq, n)
-		// }
-
-		// if iter > 1 {
+		// if iter > 10 {
 		// 	break
 		// }
 	}
-	// heap.Push(&pq, Block{pos: Pos{1, 0}, heat: 4})
-	// heap.Push(&pq, Block{pos: Pos{1, 1}, heat: 2})
-	// // heap.Push(B
-
-	// for pq.Len() > 0 {
-	// 	b := heap.Pop(&pq).(Block)
-	// 	fmt.Printf("%+v\n", b)
-	// }
-	fmt.Printf("Total iterations = %d\n", iter)
-	// grid.printVisit()
-	// grid.printHeat()
-
+	fmt.Printf("Total iterations = %d -> %+v\n", iter, pq[0])
 	return 0 //grid.minheat[grid.nrows-1][grid.ncols-1]
 }
 
