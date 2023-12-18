@@ -23,6 +23,10 @@ func (v *Vec2) Sub(u Vec2) Vec2 {
 	return Vec2{v.i - u.i, v.j - u.j}
 }
 
+func (v *Vec2) Mul(c int) Vec2 {
+	return Vec2{v.i * c, v.j * c}
+}
+
 func Max(u, v Vec2) Vec2 {
 	var i, j int
 	if u.i < v.i {
@@ -55,18 +59,18 @@ func Min(u, v Vec2) Vec2 {
 
 type Dig struct {
 	p Vec2
-	c Color
+	// c Color
 }
 
 func strToDir(dirStr string) (Vec2, error) {
 	switch dirStr {
-	case "U":
+	case "U", "3":
 		return Vec2{-1, 0}, nil
-	case "D":
+	case "D", "1":
 		return Vec2{1, 0}, nil
-	case "L":
+	case "L", "2":
 		return Vec2{0, -1}, nil
-	case "R":
+	case "R", "0":
 		return Vec2{0, 1}, nil
 	}
 	return Vec2{}, fmt.Errorf("parsing %s direction failed", dirStr)
@@ -141,12 +145,12 @@ loop:
 		// color inside
 		if g.field[p.i][p.j] == '.' {
 			g.field[p.i][p.j] = '#'
-		}
-		// Add neighbors
-		for _, dir := range []Vec2{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} {
-			np := p.Add(dir)
-			if g.isInside(np) && g.field[np.i][np.j] == '.' {
-				queue.Push(np)
+			// Add neighbors
+			for _, dir := range []Vec2{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} {
+				np := p.Add(dir)
+				if g.isInside(np) && g.field[np.i][np.j] == '.' {
+					queue.Push(np)
+				}
 			}
 		}
 
@@ -165,16 +169,47 @@ func (g *Grid) area() int {
 	return result
 }
 
+func shoelace(points []Vec2) int {
+	result := 0
+	for k := 0; k < len(points); k++ {
+		p1 := points[k]
+		var p2 Vec2
+		if k == len(points)-1 {
+			p2 = points[0]
+		} else {
+			p2 = points[k+1]
+		}
+		result += p1.i*p2.j - (p2.i * p1.j)
+	}
+	result /= 2
+	if result < 0 {
+		return -result
+	}
+	return result
+}
+
+func calcArea(plans []Dig) int {
+	points := make([]Vec2, 0)
+	perimeter := 0
+	for _, plan := range plans {
+		points = append(points, plan.p)
+	}
+	areaInside := shoelace(points)
+
+	// perimeter := len(plans)
+	return areaInside + perimeter/2 + 1
+}
+
 func part1(input []string) int {
 
 	plans := make([]Dig, 0)
 	p := Vec2{i: 0, j: 0}
 	pMin, pMax := Vec2{i: math.MaxInt, j: math.MaxInt}, Vec2{0, 0}
 	for _, line := range input {
-		dir, count, color := parsePlan(line)
+		dir, count, _ := parsePlan(line)
 		for count > 0 {
 			// Add to trench plans
-			plans = append(plans, Dig{p: p, c: color})
+			plans = append(plans, Dig{p: p})
 			// Update
 			p = p.Add(dir)
 			count--
@@ -182,25 +217,43 @@ func part1(input []string) int {
 			pMin = Min(pMin, p)
 			pMax = Max(pMax, p)
 		}
-		// fmt.Printf("%d -> %+v, %d, %s (%d, %d)\n", i, dir, count, color, nrows, ncols)
-		// break
 	}
-	// fmt.Printf("plans -> %+v (%d) -> (%+v, %+v)\n", plans, len(plans), pMin, pMax)
 
 	// make grid
 	grid := makeGrid(&plans, pMin, pMax)
-	// grid.print()
-	// fmt.Println()
-	// fmt.Println("filled:")
 	grid.fill()
-	// grid.print()
-	return grid.area()
+	area := grid.area()
+	return area
 }
 
-// func part2(input []string) int {
-// 	result := 0
-// 	return result
-// }
+func parseCorrectPlan(line string) (Vec2, int64) {
+	splitted := strings.SplitN(line, " ", 3)
+	color := splitted[2][1 : len(splitted[2])-1] // assume
+	dir, err := strToDir(color[len(color)-1:])
+	utils.CheckErr(err)
+	count, err := strconv.ParseInt(color[1:len(color)-1], 16, 64)
+	utils.CheckErr(err)
+	return dir, count
+}
+
+func part2(input []string) int {
+	points := make([]Vec2, 0)
+
+	p := Vec2{i: 0, j: 0}
+	points = append(points, p)
+
+	perimeter := 0
+	for _, line := range input {
+		dir, count := parseCorrectPlan(line)
+		p = p.Add(dir.Mul(int(count)))
+		points = append(points, p)
+		perimeter += int(count)
+	}
+
+	// Area inside using shoelace
+	areaInside := shoelace(points)
+	return areaInside + perimeter/2 + 1
+}
 
 func Solve() {
 	// Parse input
@@ -210,7 +263,7 @@ func Solve() {
 	result := part1(input)
 	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 1"), result)
 
-	// // Part 2
-	// result = part2(input)
-	// fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
+	// Part 2
+	result = part2(input)
+	fmt.Printf("%s: %v\n", utils.FormatGreen("Part 2"), result)
 }
